@@ -94,14 +94,11 @@ export const EmployeeDashboardPage = () => {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
-            Host Operations
-          </span>
-          <h2 className="text-2xl font-extrabold text-slate-900 mt-2">Host Approval Command Center</h2>
+          <h2 className="text-2xl font-bold text-slate-900">Pending Visitor Requests</h2>
           <p className="text-xs text-slate-500 mt-1">
-            Review incoming guest visit requests, authorize physical access, and track today's scheduled guests
+            Review incoming visit requests and track today's scheduled guests
           </p>
         </div>
       </div>
@@ -109,11 +106,11 @@ export const EmployeeDashboardPage = () => {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <MetricCard
-          title="Pending Host Approvals"
+          title="Pending Requests"
           value={`${pendingCount} / 3`}
           icon={CheckSquare}
-          variant={isLimitReached ? 'rose' : pendingCount > 0 ? 'amber' : 'emerald'}
-          subtitle={isLimitReached ? 'Max capacity reached (Rule 5)' : 'Awaiting your review'}
+          variant={isLimitReached ? 'rose' : pendingCount > 0 ? 'amber' : 'slate'}
+          subtitle={isLimitReached ? 'Pending limit reached (3)' : 'Awaiting your review'}
           isLoading={isLoading}
         />
         <MetricCard
@@ -121,7 +118,7 @@ export const EmployeeDashboardPage = () => {
           value={dashboardData?.todayApprovedVisits?.length ?? 0}
           icon={Clock}
           variant="indigo"
-          subtitle="Expected or inside today"
+          subtitle="Expected or on site today"
           isLoading={isLoading}
         />
         <MetricCard
@@ -134,27 +131,27 @@ export const EmployeeDashboardPage = () => {
         />
       </div>
 
-      {/* Rule 5 Alert Banner if nearing/at limit */}
+      {/* Alert Banner if at limit */}
       {isLimitReached && (
-        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 flex items-start gap-3 text-xs">
+        <div className="p-4 rounded-lg bg-rose-50 border border-rose-200 text-rose-900 flex items-start gap-3 text-xs">
           <ShieldAlert className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
           <div>
-            <p className="font-bold">Rule 5 Warning: Maximum Pending Approvals Limit Reached (3 / 3)</p>
+            <p className="font-semibold">Notice: You have reached the maximum of 3 pending requests</p>
             <p className="mt-0.5 text-rose-700">
-              Front desk cannot register new visitor requests for you until you approve or reject your pending requests below.
+              New visitor requests cannot be routed to you until pending requests below are approved or rejected.
             </p>
           </div>
         </div>
       )}
 
       {/* Pending Requests Review Section */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+      <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-base font-bold text-slate-900">Incoming Requests Awaiting Approval</h3>
-            <p className="text-xs text-slate-500 mt-0.5">Authorize or deny admission with custom host instructions</p>
+            <h3 className="text-base font-bold text-slate-900">Pending Requests</h3>
+            <p className="text-xs text-slate-500 mt-0.5">Review and approve or reject visitor access</p>
           </div>
-          <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full border border-slate-200">
+          <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full border border-slate-200">
             {pendingCount} pending
           </span>
         </div>
@@ -167,12 +164,12 @@ export const EmployeeDashboardPage = () => {
           </div>
         ) : !dashboardData?.pendingRequests?.length ? (
           <div className="py-12 text-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
-            <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3">
-              <Sparkles className="w-6 h-6" />
+            <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center mx-auto mb-3">
+              <CheckCircle2 className="w-6 h-6" />
             </div>
-            <h4 className="font-bold text-slate-800 text-sm">All caught up!</h4>
+            <h4 className="font-bold text-slate-800 text-sm">All caught up</h4>
             <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-              You have no pending visitor requests awaiting approval. New requests submitted at reception will appear here.
+              You have no pending visitor requests awaiting review. New requests from reception will appear here.
             </p>
           </div>
         ) : (

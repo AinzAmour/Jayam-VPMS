@@ -100,7 +100,7 @@ export const ReceptionistVisitorsPage = () => {
     setActionLoadingId(cancelPassTarget._id);
     try {
       await visitorService.cancel(cancelPassTarget._id, 'Cancelled by front desk');
-      toast.success(`Visit pass for ${cancelPassTarget.visitorName} cancelled (Rule 10).`);
+      toast.success(`Visit pass for ${cancelPassTarget.visitorName} cancelled.`);
       setCancelPassTarget(null);
       loadPasses(pagination.currentPage);
     } catch (err) {
@@ -230,10 +230,10 @@ export const ReceptionistVisitorsPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Visitor Pass Records & Search Archive</h2>
-          <p className="text-xs text-slate-500 mt-0.5">Comprehensive multi-criteria search, historical lookup, and pass lifecycle actions</p>
+          <h2 className="text-xl font-bold text-slate-900">Visitor Records</h2>
+          <p className="text-xs text-slate-500 mt-0.5">Search and filter visitor history and pass records</p>
         </div>
       </div>
 

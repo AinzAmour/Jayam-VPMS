@@ -45,13 +45,10 @@ export const AdminDashboardPage = () => {
   return (
     <div className="space-y-8">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
-            Executive Command Center
-          </span>
-          <h2 className="text-2xl font-extrabold text-slate-900 mt-2">Workplace Occupancy & Visitor Operations</h2>
-          <p className="text-xs text-slate-500 mt-1">Real-time facility access intelligence across all company premises</p>
+          <h2 className="text-2xl font-bold text-slate-900">Visitor Overview</h2>
+          <p className="text-xs text-slate-500 mt-1">Today's visitor activity and site access</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm" icon={FileSpreadsheet} onClick={() => navigate('/admin/reports')}>
@@ -66,23 +63,23 @@ export const AdminDashboardPage = () => {
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <MetricCard
-          title="Inside Right Now"
+          title="Inside Now"
           value={stats?.currentInside ?? 0}
           icon={Building2}
           variant="indigo"
-          subtitle="Active on premises"
+          subtitle="Currently on site"
           isLoading={isLoading}
         />
         <MetricCard
           title="Today's Passes"
           value={stats?.todayTotal ?? 0}
           icon={Users}
-          variant="emerald"
+          variant="slate"
           subtitle="Registered today"
           isLoading={isLoading}
         />
         <MetricCard
-          title="Scheduled Today"
+          title="Expected Today"
           value={stats?.scheduledToday ?? 0}
           icon={Clock}
           variant="slate"
@@ -98,11 +95,11 @@ export const AdminDashboardPage = () => {
           isLoading={isLoading}
         />
         <MetricCard
-          title="Active Staff"
+          title="Total Staff"
           value={stats?.totalEmployees ?? 0}
           icon={ShieldCheck}
           variant="slate"
-          subtitle="Host directory roster"
+          subtitle="Active directory"
           isLoading={isLoading}
         />
       </div>

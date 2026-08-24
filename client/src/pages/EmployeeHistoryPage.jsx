@@ -134,10 +134,10 @@ export const EmployeeHistoryPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">My Hosted Visitor History</h2>
-          <p className="text-xs text-slate-500 mt-0.5">Historical log of all guest requests and visits hosted by you</p>
+          <h2 className="text-xl font-bold text-slate-900">Visit History</h2>
+          <p className="text-xs text-slate-500 mt-0.5">Log of all visitor requests and visits hosted by you</p>
         </div>
       </div>
 

@@ -96,14 +96,11 @@ export const AdminReportsPage = () => {
   return (
     <div className="space-y-8">
       {/* Top Header & Filter Controls */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+      <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
-              Analytics & Intelligence
-            </span>
-            <h2 className="text-2xl font-extrabold text-slate-900 mt-2">Workplace Visitor Summary Reports</h2>
-            <p className="text-xs text-slate-500 mt-1">Aggregated visitor volume, department traffic distributions, and admission metrics</p>
+            <h2 className="text-2xl font-bold text-slate-900">Visitor Reports</h2>
+            <p className="text-xs text-slate-500 mt-1">Summary metrics, department distributions, and daily visit logs</p>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="secondary" size="sm" icon={Download} onClick={handleExportCSV}>

@@ -132,18 +132,18 @@ export const AdminEmployeesPage = () => {
       ),
     },
     {
-      header: 'Pending Queue (Rule 5)',
+      header: 'Pending Requests',
       render: (row) => {
         const count = row.pendingRequestsCount || 0;
         const isLimit = count >= 3;
         return (
           <div className="flex items-center gap-2">
             <span
-              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
                 isLimit
-                  ? 'bg-rose-50 border-rose-300 text-rose-800'
+                  ? 'bg-rose-50 border-rose-200 text-rose-700'
                   : count > 0
-                  ? 'bg-amber-50 border-amber-300 text-amber-800'
+                  ? 'bg-amber-50 border-amber-200 text-amber-700'
                   : 'bg-slate-100 border-slate-200 text-slate-600'
               }`}
             >
@@ -158,9 +158,9 @@ export const AdminEmployeesPage = () => {
       header: 'Status',
       render: (row) => (
         <span
-          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
             row.isActive
-              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
               : 'bg-slate-100 border-slate-200 text-slate-500'
           }`}
         >
@@ -188,10 +188,10 @@ export const AdminEmployeesPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Staff Host Directory</h2>
-          <p className="text-xs text-slate-500 mt-0.5">Manage employee host profiles, designations, and pending visitor review capacity</p>
+          <h2 className="text-xl font-bold text-slate-900">Staff Directory</h2>
+          <p className="text-xs text-slate-500 mt-0.5">Manage employee profiles, departments, and host availability</p>
         </div>
         <Button variant="primary" size="sm" icon={UserPlus} onClick={handleOpenCreateModal}>
           Add Employee

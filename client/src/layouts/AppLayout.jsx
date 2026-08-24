@@ -34,7 +34,7 @@ export const AppLayout = () => {
   let navItems = [];
   if (role === 'ADMINISTRATOR') {
     navItems = [
-      { to: '/admin/dashboard', label: 'Workplace Overview', icon: LayoutDashboard },
+      { to: '/admin/dashboard', label: 'Overview', icon: LayoutDashboard },
       { to: '/admin/employees', label: 'Staff Directory', icon: Users },
       { to: '/admin/users', label: 'User Accounts', icon: UserCheck },
       { to: '/admin/reports', label: 'Visitor Reports', icon: BarChart3 },
@@ -42,14 +42,14 @@ export const AppLayout = () => {
     ];
   } else if (role === 'RECEPTIONIST') {
     navItems = [
-      { to: '/receptionist/dashboard', label: 'Lobby Operations', icon: LayoutDashboard },
+      { to: '/receptionist/dashboard', label: 'Visitor Desk', icon: LayoutDashboard },
       { to: '/receptionist/register', label: 'Register Visitor', icon: UserPlus },
       { to: '/receptionist/visitors', label: 'Visitor Records', icon: ClipboardList },
     ];
   } else if (role === 'EMPLOYEE') {
     navItems = [
-      { to: '/employee/dashboard', label: 'Pending Approvals', icon: CheckSquare },
-      { to: '/employee/history', label: 'My Host History', icon: History },
+      { to: '/employee/dashboard', label: 'Pending Requests', icon: CheckSquare },
+      { to: '/employee/history', label: 'Visit History', icon: History },
     ];
   }
 
@@ -75,12 +75,12 @@ export const AppLayout = () => {
       <aside className="hidden lg:flex lg:flex-col lg:w-64 bg-slate-900 border-r border-slate-800 text-slate-300 select-none">
         {/* Brand Header */}
         <div className="h-16 flex items-center gap-3 px-6 bg-slate-950/70 border-b border-slate-800/80">
-          <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+          <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-sm">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
             <h1 className="font-bold text-white tracking-tight text-base leading-none">JAYAM VPMS</h1>
-            <p className="text-[10px] text-indigo-400 font-semibold tracking-wider mt-1">ACCESS OPERATIONS</p>
+            <p className="text-[10px] text-slate-400 font-medium tracking-wider mt-1">VISITOR MANAGEMENT</p>
           </div>
         </div>
 
@@ -223,7 +223,7 @@ export const AppLayout = () => {
             </button>
             <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 font-medium">
               <Building2 className="w-4 h-4 text-slate-400" />
-              <span>Headquarters Lobby</span>
+              <span>Jayam VPMS</span>
               <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
               <span className="capitalize text-slate-700 font-semibold">{role?.toLowerCase()} Portal</span>
             </div>

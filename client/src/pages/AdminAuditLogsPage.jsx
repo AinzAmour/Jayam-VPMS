@@ -107,16 +107,11 @@ export const AdminAuditLogsPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
         <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl font-bold text-slate-900">System Activity Audit Trail</h2>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-[10px] font-bold">
-              <ShieldCheck className="w-3 h-3" /> Immutable Forensic Log
-            </span>
-          </div>
+          <h2 className="text-xl font-bold text-slate-900">Audit Trail</h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            Cryptographically timestamped record of every pass creation, host approval, receptionist check-in, and departure
+            Log of visitor pass registrations, approvals, check-ins, and departures
           </p>
         </div>
       </div>

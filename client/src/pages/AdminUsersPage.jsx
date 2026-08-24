@@ -195,13 +195,13 @@ export const AdminUsersPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">User Access & Accounts</h2>
-          <p className="text-xs text-slate-500 mt-0.5">Provision logins, assign role permissions, and link accounts to employee host profiles</p>
+          <h2 className="text-xl font-bold text-slate-900">User Accounts</h2>
+          <p className="text-xs text-slate-500 mt-0.5">Manage user logins, roles, and staff profile linking</p>
         </div>
         <Button variant="primary" size="sm" icon={UserPlus} onClick={handleOpenCreateModal}>
-          Provision User
+          Add User
         </Button>
       </div>
 
@@ -241,7 +241,7 @@ export const AdminUsersPage = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingUser ? 'Edit User Credentials' : 'Provision New System User'}
+        title={editingUser ? 'Edit User Account' : 'Add New User'}
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
@@ -262,7 +262,7 @@ export const AdminUsersPage = () => {
           />
 
           <Input
-            label={editingUser ? 'Reset Password (Leave blank to keep existing)' : 'Initial Password'}
+            label={editingUser ? 'Reset Password (Leave blank to keep existing)' : 'Password'}
             type="password"
             placeholder="••••••••"
             value={formData.password}
@@ -277,9 +277,9 @@ export const AdminUsersPage = () => {
             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
             required
             options={[
-              { value: 'ADMINISTRATOR', label: 'Administrator (Full Access)' },
-              { value: 'RECEPTIONIST', label: 'Receptionist (Front Desk Operations)' },
-              { value: 'EMPLOYEE', label: 'Employee (Host Approvals)' },
+              { value: 'ADMINISTRATOR', label: 'Administrator' },
+              { value: 'RECEPTIONIST', label: 'Receptionist' },
+              { value: 'EMPLOYEE', label: 'Employee' },
             ]}
           />
 
@@ -305,7 +305,7 @@ export const AdminUsersPage = () => {
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
                   className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4"
                 />
-                <span className="text-xs font-semibold text-slate-700">Account is Active & Permitted to Login</span>
+                <span className="text-xs font-semibold text-slate-700">Active</span>
               </label>
             </div>
           )}
@@ -315,7 +315,7 @@ export const AdminUsersPage = () => {
               Cancel
             </Button>
             <Button type="submit" variant="primary" size="sm" isLoading={formSubmitting}>
-              {editingUser ? 'Save Account' : 'Create User'}
+              {editingUser ? 'Save Changes' : 'Create User'}
             </Button>
           </div>
         </form>

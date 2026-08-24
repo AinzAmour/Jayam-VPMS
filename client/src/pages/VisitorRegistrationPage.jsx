@@ -100,17 +100,17 @@ export const VisitorRegistrationPage = () => {
 
     // Rule 3: Date cannot be earlier than today
     if (formData.visitDate && formData.visitDate < today) {
-      newErrors.visitDate = 'Visit date cannot be earlier than today (Rule 3).';
+      newErrors.visitDate = 'Visit date cannot be in the past.';
     }
 
     // Rule 4: For today's registrations, time cannot be earlier than current time
     if (formData.visitDate === today && formData.expectedArrivalTime && formData.expectedArrivalTime < currentTime) {
-      newErrors.expectedArrivalTime = `Expected time cannot be earlier than current time (${currentTime}) (Rule 4).`;
+      newErrors.expectedArrivalTime = 'Arrival time must be later than the current time.';
     }
 
     // Rule 5: Host employee cannot have more than 3 pending requests
     if (selectedHost && selectedHost.isPendingLimitReached) {
-      newErrors.hostEmployeeId = `${selectedHost.fullName} already has 3 pending requests awaiting approval (Rule 5 limit reached).`;
+      newErrors.hostEmployeeId = `${selectedHost.fullName} already has 3 pending requests awaiting review. Please select another host.`;
     }
 
     setErrors(newErrors);
@@ -143,13 +143,10 @@ export const VisitorRegistrationPage = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Header */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-        <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
-          Front Desk Admission
-        </span>
-        <h2 className="text-2xl font-extrabold text-slate-900 mt-2">New Visitor Pass Registration</h2>
+      <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <h2 className="text-2xl font-bold text-slate-900">Register Visitor</h2>
         <p className="text-xs text-slate-500 mt-1">
-          Capture guest details, schedule visit, and route pass to host employee while enforcing Business Rules 1–5
+          Register a visitor, choose a host, and schedule their visit.
         </p>
       </div>
 
@@ -181,7 +178,7 @@ export const VisitorRegistrationPage = () => {
               value={formData.visitorPhone}
               onChange={(e) => setFormData({ ...formData, visitorPhone: e.target.value })}
               error={errors.visitorPhone}
-              helperText="Enforces Rule 1 (active visit) & Rule 2 (daily uniqueness)"
+              helperText="Phone number is used to identify the visitor."
               icon={Phone}
               required
             />
@@ -209,7 +206,7 @@ export const VisitorRegistrationPage = () => {
         </div>
 
         {/* Section 2: Host Employee & Scheduling */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5">
           <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
             <Calendar className="w-5 h-5 text-indigo-600" />
             <div>
@@ -235,7 +232,7 @@ export const VisitorRegistrationPage = () => {
               {employees.map((emp) => (
                 <option key={emp._id} value={emp._id} disabled={emp.isPendingLimitReached}>
                   {emp.fullName} ({emp.employeeCode} - {emp.department}){' '}
-                  {emp.isPendingLimitReached ? '❌ [MAX 3 PENDING LIMIT REACHED - RULE 5]' : `[${emp.pendingRequestsCount || 0} / 3 Pending]`}
+                  {emp.isPendingLimitReached ? '[Pending limit reached (3)]' : `[${emp.pendingRequestsCount || 0} / 3 Pending]`}
                 </option>
               ))}
             </select>
@@ -244,7 +241,7 @@ export const VisitorRegistrationPage = () => {
             {/* Host Capacity Insight Box */}
             {selectedHost && (
               <div
-                className={`mt-3 p-3 rounded-xl border flex items-center justify-between text-xs ${
+                className={`mt-3 p-3 rounded-lg border flex items-center justify-between text-xs ${
                   selectedHost.isPendingLimitReached
                     ? 'bg-rose-50 border-rose-200 text-rose-900'
                     : selectedHost.pendingRequestsCount > 0
@@ -260,11 +257,11 @@ export const VisitorRegistrationPage = () => {
                   )}
                   <span>
                     <strong>Host:</strong> {selectedHost.fullName} ({selectedHost.designation}) —{' '}
-                    <strong>{selectedHost.pendingRequestsCount || 0}</strong> of 3 max pending requests awaiting approval.
+                    <strong>{selectedHost.pendingRequestsCount || 0}</strong> of 3 pending requests awaiting review.
                   </span>
                 </div>
                 <span className="font-bold">
-                  {selectedHost.isPendingLimitReached ? 'BLOCKED (RULE 5)' : 'AVAILABLE'}
+                  {selectedHost.isPendingLimitReached ? 'AT CAPACITY' : 'AVAILABLE'}
                 </span>
               </div>
             )}
@@ -278,7 +275,7 @@ export const VisitorRegistrationPage = () => {
               value={formData.visitDate}
               onChange={(e) => setFormData({ ...formData, visitDate: e.target.value })}
               error={errors.visitDate}
-              helperText="Rule 3: Cannot be earlier than today"
+              helperText="Visit date cannot be in the past"
               icon={Calendar}
               required
             />
@@ -289,7 +286,7 @@ export const VisitorRegistrationPage = () => {
               value={formData.expectedArrivalTime}
               onChange={(e) => setFormData({ ...formData, expectedArrivalTime: e.target.value })}
               error={errors.expectedArrivalTime}
-              helperText="Rule 4: If today, cannot be earlier than current time"
+              helperText="Arrival time must be later than current time"
               icon={Clock}
               required
             />
@@ -308,8 +305,8 @@ export const VisitorRegistrationPage = () => {
 
           {/* Quick Purpose Presets */}
           <div>
-            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-indigo-600" /> Quick Purpose Presets:
+            <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
+              Common reasons:
             </p>
             <div className="flex flex-wrap gap-2">
               {[

@@ -84,7 +84,7 @@ export const ReceptionistDashboardPage = () => {
     setActionLoadingId(cancelPassTarget._id);
     try {
       await visitorService.cancel(cancelPassTarget._id, cancelReason || 'Cancelled at front desk');
-      toast.success(`Visit pass for ${cancelPassTarget.visitorName} cancelled (Rule 10).`);
+      toast.success(`Visit pass for ${cancelPassTarget.visitorName} cancelled.`);
       setCancelPassTarget(null);
       setCancelReason('');
       loadTodayQueue();
@@ -98,20 +98,16 @@ export const ReceptionistDashboardPage = () => {
   return (
     <div className="space-y-8">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
-            Front Desk Operations
-          </span>
-          <h2 className="text-2xl font-extrabold text-slate-900 mt-2">Lobby Reception Command Center</h2>
-          <p className="text-xs text-slate-500 mt-1">Live visitor check-in queue and physical premises admission workflow</p>
+          <h2 className="text-2xl font-bold text-slate-900">Visitor Desk</h2>
+          <p className="text-xs text-slate-500 mt-1">Today's arrivals, check-in queue, and visitor departures</p>
         </div>
         <Button
           variant="primary"
           size="md"
           icon={UserPlus}
           onClick={() => navigate('/receptionist/register')}
-          className="shadow-md"
         >
           Register New Visitor
         </Button>
@@ -120,27 +116,27 @@ export const ReceptionistDashboardPage = () => {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
-          title="Visitors Inside Now"
+          title="Inside Now"
           value={queueData?.insideCount ?? 0}
           icon={Building2}
           variant="indigo"
-          subtitle="Currently on premises"
+          subtitle="Currently on site"
           isLoading={isLoading}
         />
         <MetricCard
-          title="Today's Total Passes"
+          title="Today's Passes"
           value={queueData?.totalToday ?? 0}
           icon={Users}
-          variant="emerald"
-          subtitle={`Date: ${queueData?.date || 'Today'}`}
+          variant="slate"
+          subtitle="Registered today"
           isLoading={isLoading}
         />
         <MetricCard
-          title="Scheduled Visitors"
+          title="Expected Today"
           value={queueData?.scheduledCount ?? 0}
           icon={Clock}
           variant="slate"
-          subtitle="Cleared or scheduled"
+          subtitle="Scheduled arrivals"
           isLoading={isLoading}
         />
         <MetricCard
@@ -148,22 +144,22 @@ export const ReceptionistDashboardPage = () => {
           value={queueData?.pendingApprovalCount ?? 0}
           icon={AlertCircle}
           variant="amber"
-          subtitle="Rule 5 queue"
+          subtitle="Waiting for host review"
           isLoading={isLoading}
         />
       </div>
 
       {/* Today's Live Reception Queue */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+      <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
           <div>
-            <h3 className="text-base font-bold text-slate-900">Today's Admission & Departure Queue</h3>
+            <h3 className="text-base font-bold text-slate-900">Today's Visitor Queue</h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              1-Click Check-In enabled upon host clearance; 1-Click Check-Out enabled when inside premises
+              Check in approved visitors on arrival and check them out on departure
             </p>
           </div>
-          <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
-            {queueData?.queue?.length || 0} active visits scheduled today
+          <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+            {queueData?.queue?.length || 0} visits today
           </span>
         </div>
 
@@ -288,7 +284,7 @@ export const ReceptionistDashboardPage = () => {
                             <button
                               onClick={() => setCancelPassTarget(pass)}
                               className="p-1.5 text-slate-400 hover:text-rose-600 rounded hover:bg-rose-50"
-                              title="Cancel Visit (Rule 10)"
+                              title="Cancel Visit"
                             >
                               <Ban className="w-4 h-4" />
                             </button>
@@ -314,7 +310,7 @@ export const ReceptionistDashboardPage = () => {
         onClose={() => setCancelPassTarget(null)}
         onConfirm={handleConfirmCancel}
         title="Cancel Visitor Pass"
-        message={`Are you sure you want to cancel the visit for ${cancelPassTarget?.visitorName}? Per Rule 10, cancelled visits are archived from active reception queues.`}
+        message={`Are you sure you want to cancel the visit for ${cancelPassTarget?.visitorName}?`}
         confirmText="Confirm Cancellation"
         variant="danger"
         isLoading={!!actionLoadingId}

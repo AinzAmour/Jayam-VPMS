@@ -71,21 +71,21 @@ export const LoginPage = () => {
 
       {/* Main Card */}
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md z-10 px-4 sm:px-0">
-        <div className="bg-white py-8 px-6 shadow-2xl rounded-2xl sm:px-10 border border-slate-100">
+        <div className="bg-white py-8 px-6 shadow-lg rounded-xl sm:px-10 border border-slate-200">
           <div className="mb-6">
-            <h3 className="text-xl font-bold text-slate-900">Sign in to your account</h3>
-            <p className="text-xs text-slate-500 mt-1">Enter your organizational credentials to proceed</p>
+            <h3 className="text-xl font-bold text-slate-900">Sign in</h3>
+            <p className="text-xs text-slate-500 mt-1">Enter your credentials to access the system</p>
           </div>
 
           {errorMessage && (
-            <div className="mb-5 p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs font-semibold text-rose-700">
+            <div className="mb-5 p-3 rounded-lg bg-rose-50 border border-rose-200 text-xs font-semibold text-rose-700">
               {errorMessage}
             </div>
           )}
 
           <form onSubmit={handleLogin} className="space-y-4">
             <Input
-              label="Email Address"
+              label="Email address"
               name="email"
               type="email"
               placeholder="name@company.com"
@@ -112,7 +112,7 @@ export const LoginPage = () => {
               type="submit"
               variant="primary"
               size="md"
-              className="w-full mt-2 font-semibold shadow-md"
+              className="w-full mt-2 font-semibold"
               icon={LogIn}
               isLoading={isLoading}
             >
@@ -120,61 +120,39 @@ export const LoginPage = () => {
             </Button>
           </form>
 
-          {/* Quick Demo Logins Section */}
-          <div className="mt-8 pt-6 border-t border-slate-100">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-600 uppercase tracking-wider mb-3">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Quick Demo Switcher</span>
+          {/* Discreet Demo Accounts Selector */}
+          <div className="mt-6 pt-5 border-t border-slate-100">
+            <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
+              <span className="font-medium text-slate-600">Fill demo account:</span>
             </div>
-            <p className="text-[11px] text-slate-500 mb-3">Click any role pill to prefill test credentials:</p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="flex flex-wrap gap-1.5">
               <button
                 type="button"
                 onClick={() => handleQuickLogin('admin@jayam.com')}
-                className="flex items-center justify-between p-2 rounded-lg bg-rose-50 hover:bg-rose-100/80 border border-rose-200 text-left transition-colors"
+                className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded border border-slate-200 transition-colors"
               >
-                <div>
-                  <p className="text-xs font-bold text-rose-900">Administrator</p>
-                  <p className="text-[10px] text-rose-700">admin@jayam.com</p>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-rose-600" />
+                Admin
               </button>
-
               <button
                 type="button"
                 onClick={() => handleQuickLogin('receptionist@jayam.com')}
-                className="flex items-center justify-between p-2 rounded-lg bg-indigo-50 hover:bg-indigo-100/80 border border-indigo-200 text-left transition-colors"
+                className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded border border-slate-200 transition-colors"
               >
-                <div>
-                  <p className="text-xs font-bold text-indigo-900">Receptionist</p>
-                  <p className="text-[10px] text-indigo-700">receptionist@jayam.com</p>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-indigo-600" />
+                Receptionist
               </button>
-
               <button
                 type="button"
                 onClick={() => handleQuickLogin('david.chen@jayam.com')}
-                className="flex items-center justify-between p-2 rounded-lg bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 text-left transition-colors"
+                className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded border border-slate-200 transition-colors"
               >
-                <div>
-                  <p className="text-xs font-bold text-emerald-900">David (Engineering)</p>
-                  <p className="text-[10px] text-emerald-700">david.chen@jayam.com</p>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-emerald-600" />
+                Host (David)
               </button>
-
               <button
                 type="button"
                 onClick={() => handleQuickLogin('ananya.sharma@jayam.com')}
-                className="flex items-center justify-between p-2 rounded-lg bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 text-left transition-colors"
+                className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded border border-slate-200 transition-colors"
               >
-                <div>
-                  <p className="text-xs font-bold text-emerald-900">Ananya (HR)</p>
-                  <p className="text-[10px] text-emerald-700">ananya.sharma@jayam.com</p>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-emerald-600" />
+                Host (Ananya)
               </button>
             </div>
           </div>
