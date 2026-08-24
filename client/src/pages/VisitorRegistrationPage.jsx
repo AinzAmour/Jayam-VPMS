@@ -81,6 +81,8 @@ export const VisitorRegistrationPage = () => {
     }
   };
 
+  const selectedHost = employees.find((e) => String(e._id) === String(formData.hostEmployeeId));
+
   const validateForm = () => {
     const newErrors = {};
     const today = getTodayStr();
