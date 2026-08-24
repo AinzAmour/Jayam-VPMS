@@ -1,0 +1,24 @@
+{
+  "name": "jayam-vpms-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Visitor Pass Management System (VPMS) - MERN Stack Monorepo",
+  "scripts": {
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "build:client": "cd client && npm run build",
+    "seed": "cd server && npm run seed",
+    "test:server": "cd server && npm test",
+    "test": "npm run test:server"
+  },
+  "keywords": [
+    "mern",
+    "visitor-pass",
+    "react",
+    "express",
+    "mongodb",
+    "tailwind"
+  ],
+  "author": "Jayam Solutions Assessment Candidate",
+  "license": "ISC"
+}
