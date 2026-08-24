@@ -8,6 +8,7 @@ import AuditTimelineModal from '../components/AuditTimelineModal';
 import Button from '../components/Button';
 import {
   Users,
+  UserCheck,
   Building2,
   Clock,
   CheckCircle2,
