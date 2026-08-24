@@ -2,6 +2,10 @@
 
 Jayam VPMS is a full-stack Visitor Pass Management System designed to manage corporate visitor lifecycle operations. It provides role-based workflows for front desk receptionists to register and check in guests, host employees to approve or reject visit requests, and administrators to oversee workplace occupancy, manage staff directories, and review audit logs.
 
+### 🌐 Live Deployment
+- **Web Application (Frontend)**: [https://jayam-vpms-frontend.vercel.app](https://jayam-vpms-frontend.vercel.app)
+- **API Server (Backend)**: [https://jayam-vpms-backend.onrender.com](https://jayam-vpms-backend.onrender.com)
+
 ---
 
 ## Features
