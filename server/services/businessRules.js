@@ -1,5 +1,9 @@
 import VisitPass from '../models/VisitPass.js';
 
+/**
+ * Standardize dates into YYYY-MM-DD format for consistent database queries
+ * and comparison operations across client inputs and server UTC times.
+ */
 export const normalizeDateString = (dateInput) => {
   if (!dateInput) return null;
   if (typeof dateInput === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
@@ -12,6 +16,9 @@ export const normalizeDateString = (dateInput) => {
   return `${year}-${month}-${day}`;
 };
 
+/**
+ * Returns today's local date string formatted as YYYY-MM-DD.
+ */
 export const getTodayDateString = () => {
   const d = new Date();
   const year = d.getFullYear();
@@ -20,6 +27,9 @@ export const getTodayDateString = () => {
   return `${year}-${month}-${day}`;
 };
 
+/**
+ * Returns current 24-hour time formatted as HH:mm for arrival time comparisons.
+ */
 export const getCurrentTimeString = () => {
   const d = new Date();
   const hours = String(d.getHours()).padStart(2, '0');
@@ -28,7 +38,13 @@ export const getCurrentTimeString = () => {
 };
 
 /**
- * Validate all creation-time business rules (Rules 1, 2, 3, 4, 5)
+ * Pre-creation validation pipeline.
+ * Evaluates core operational constraints before persisting a new visit pass:
+ * 1. Visit date cannot be in the past.
+ * 2. If registering for today, arrival time cannot be in the past.
+ * 3. Visitor phone cannot have another ongoing active pass (pending/approved/inside).
+ * 4. Visitor cannot be registered more than once on the same date.
+ * 5. Host employee cannot exceed 3 pending approval requests at any given time.
  */
 export const validateVisitRegistration = async ({
   visitorPhone,
@@ -40,7 +56,7 @@ export const validateVisitRegistration = async ({
   const todayStr = getTodayDateString();
   const currentTimeStr = getCurrentTimeString();
 
-  // Rule 3: Visit date cannot be earlier than current date
+  // Rule 3: Ensure visitors are not scheduled on dates that have already passed
   if (normalizedVisitDate < todayStr) {
     const error = new Error('Visit date cannot be earlier than the current date (Rule 3).');
     error.statusCode = 400;
@@ -48,9 +64,8 @@ export const validateVisitRegistration = async ({
     throw error;
   }
 
-  // Rule 4: For today's registrations, expected arrival time cannot be earlier than current time
+  // Rule 4: For same-day bookings, the arrival time must be ahead of current time
   if (normalizedVisitDate === todayStr) {
-    // If expected arrival time is strictly before current time
     if (expectedArrivalTime < currentTimeStr) {
       const error = new Error(
         `For today's registrations, expected arrival time (${expectedArrivalTime}) cannot be earlier than the current time (${currentTimeStr}) (Rule 4).`

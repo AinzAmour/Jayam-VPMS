@@ -17,6 +17,10 @@ export const generateToken = (user) => {
   );
 };
 
+/**
+ * Authenticates incoming HTTP requests by verifying the JWT in the Authorization header.
+ * Attaches the authenticated user document (without password hash) to `req.user`.
+ */
 export const verifyToken = async (req, res, next) => {
   try {
     let token = null;
@@ -33,6 +37,7 @@ export const verifyToken = async (req, res, next) => {
       });
     }
 
+    // Verify token cryptographic signature and expiry
     const decoded = jwt.verify(token, JWT_SECRET);
     const user = await User.findById(decoded.id).select('-password');
 
@@ -43,6 +48,7 @@ export const verifyToken = async (req, res, next) => {
       });
     }
 
+    // Block deactivated accounts from accessing protected API endpoints
     if (!user.isActive) {
       return res.status(403).json({
         success: false,
@@ -66,6 +72,12 @@ export const verifyToken = async (req, res, next) => {
   }
 };
 
+/**
+ * Role-Based Access Control (RBAC) middleware factory.
+ * Enforces route authorization based on assigned user role(s).
+ *
+ * @param {...string} allowedRoles - Allowed roles (e.g. 'ADMINISTRATOR', 'RECEPTIONIST', 'EMPLOYEE')
+ */
 export const requireRoles = (...allowedRoles) => {
   return (req, res, next) => {
     if (!req.user) {

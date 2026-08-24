@@ -81,8 +81,14 @@ export const VisitorRegistrationPage = () => {
     }
   };
 
-  const selectedHost = employees.find((e) => String(e._id) === String(formData.hostEmployeeId));
-
+  /**
+   * Client-side form validation.
+   * Mirrors server-side business rules to provide immediate visual feedback before submission:
+   * - Ensures non-empty strings for visitor identity and agenda
+   * - Validates scheduled visit date is not in the past
+   * - Enforces future time constraint for same-day scheduled arrivals
+   * - Prevents assigning to a host who has reached their maximum pending queue capacity (3)
+   */
   const validateForm = () => {
     const newErrors = {};
     const today = getTodayStr();
@@ -98,17 +104,17 @@ export const VisitorRegistrationPage = () => {
       newErrors.purpose = 'Purpose must be at least 3 characters';
     }
 
-    // Rule 3: Date cannot be earlier than today
+    // Past date constraint
     if (formData.visitDate && formData.visitDate < today) {
       newErrors.visitDate = 'Visit date cannot be in the past.';
     }
 
-    // Rule 4: For today's registrations, time cannot be earlier than current time
+    // Same-day arrival time constraint
     if (formData.visitDate === today && formData.expectedArrivalTime && formData.expectedArrivalTime < currentTime) {
       newErrors.expectedArrivalTime = 'Arrival time must be later than the current time.';
     }
 
-    // Rule 5: Host employee cannot have more than 3 pending requests
+    // Host capacity threshold (max 3 pending)
     if (selectedHost && selectedHost.isPendingLimitReached) {
       newErrors.hostEmployeeId = `${selectedHost.fullName} already has 3 pending requests awaiting review. Please select another host.`;
     }

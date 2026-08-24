@@ -10,6 +10,7 @@ import {
 } from '../services/businessRules.js';
 
 // Helper to generate human-readable Pass ID e.g. VP-20260824-001
+// Combines visit date with a zero-padded daily sequence counter
 const generatePassId = async (visitDate) => {
   const dateCompact = visitDate.replace(/-/g, '');
   const countToday = await VisitPass.countDocuments({ visitDate });
@@ -17,6 +18,11 @@ const generatePassId = async (visitDate) => {
   return `VP-${dateCompact}-${serial}`;
 };
 
+/**
+ * Handle new visitor registration.
+ * Validates payload, checks host active status, enforces all 5 creation business rules,
+ * generates a structured Pass ID, persists the pass record, and logs an immutable audit event.
+ */
 export const registerVisitor = async (req, res, next) => {
   try {
     const {
@@ -30,6 +36,7 @@ export const registerVisitor = async (req, res, next) => {
       purpose,
     } = req.body;
 
+    // Validate presence of required fields
     if (
       !visitorName ||
       !visitorPhone ||
@@ -45,6 +52,7 @@ export const registerVisitor = async (req, res, next) => {
       });
     }
 
+    // Verify selected host employee is active and exists in directory
     const hostEmployee = await Employee.findById(hostEmployeeId);
     if (!hostEmployee || !hostEmployee.isActive) {
       return res.status(400).json({
@@ -53,7 +61,7 @@ export const registerVisitor = async (req, res, next) => {
       });
     }
 
-    // Enforce Business Rules 1, 2, 3, 4, 5
+    // Enforce Business Rules 1, 2, 3, 4, 5 before database insertion
     const { normalizedVisitDate } = await validateVisitRegistration({
       visitorPhone,
       hostEmployeeId,
