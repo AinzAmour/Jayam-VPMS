@@ -27,21 +27,33 @@
   background: #94a3b8;
 }
 
-/* Print Specific Styles for Pass Slips and Reports */
+/* Print styles — hide sidebar/nav, show report content full-width */
 @media print {
-  body * {
-    visibility: hidden;
-  }
-  .printable-area, .printable-area * {
-    visibility: visible;
-  }
-  .printable-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-  }
-  .no-print {
+  /* hide sidebar, mobile nav, toasts, modals */
+  aside, nav, .no-print, [role="dialog"] {
     display: none !important;
+  }
+
+  /* let main content fill the page */
+  body, #root, main {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .printable-area {
+    width: 100% !important;
+    padding: 16px !important;
+  }
+
+  /* keep background colors in PDF */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* remove shadows and rounded corners for cleaner print */
+  .printable-area .shadow-sm {
+    box-shadow: none !important;
   }
 }

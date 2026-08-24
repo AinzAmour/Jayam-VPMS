@@ -94,7 +94,7 @@ export const AdminReportsPage = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="printable-area space-y-6">
       {/* Top Header & Filter Controls */}
       <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -102,7 +102,7 @@ export const AdminReportsPage = () => {
             <h2 className="text-2xl font-bold text-slate-900">Visitor Reports</h2>
             <p className="text-xs text-slate-500 mt-1">Summary metrics, department distributions, and daily visit logs</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 no-print">
             <Button variant="secondary" size="sm" icon={Download} onClick={handleExportCSV}>
               Export CSV
             </Button>
@@ -113,7 +113,7 @@ export const AdminReportsPage = () => {
         </div>
 
         {/* Date Filter Bar */}
-        <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-100">
+        <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-100 no-print">
           <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200">
             <button
               onClick={() => setFilterPreset('today')}
