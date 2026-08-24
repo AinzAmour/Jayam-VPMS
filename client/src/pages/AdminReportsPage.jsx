@@ -94,9 +94,9 @@ export const AdminReportsPage = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Top Header & Filter Controls */}
-      <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
+      <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold text-slate-900">Visitor Reports</h2>

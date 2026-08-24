@@ -43,18 +43,18 @@ export const AdminDashboardPage = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
         <div>
           <h2 className="text-2xl font-bold text-slate-900">Visitor Overview</h2>
           <p className="text-xs text-slate-500 mt-1">Today's visitor activity and site access</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm" icon={FileSpreadsheet} onClick={() => navigate('/admin/reports')}>
-            View Reports
+          <Button variant="secondary" size="sm" icon={UserCheck} onClick={() => navigate('/admin/users')}>
+            User Accounts
           </Button>
-          <Button variant="primary" size="sm" icon={UserPlus} onClick={() => navigate('/admin/employees')}>
+          <Button variant="primary" size="sm" icon={Users} onClick={() => navigate('/admin/employees')}>
             Staff Directory
           </Button>
         </div>

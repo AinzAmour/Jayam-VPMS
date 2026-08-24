@@ -96,9 +96,9 @@ export const ReceptionistDashboardPage = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
         <div>
           <h2 className="text-2xl font-bold text-slate-900">Visitor Desk</h2>
           <p className="text-xs text-slate-500 mt-1">Today's arrivals, check-in queue, and visitor departures</p>

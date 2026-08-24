@@ -141,9 +141,9 @@ export const VisitorRegistrationPage = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
-      <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+      <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
         <h2 className="text-2xl font-bold text-slate-900">Register Visitor</h2>
         <p className="text-xs text-slate-500 mt-1">
           Register a visitor, choose a host, and schedule their visit.
