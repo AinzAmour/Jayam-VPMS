@@ -4,7 +4,7 @@ import authService from '../services/authService';
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  // Hydrate initial auth state synchronously from localStorage to prevent flash of unauthenticated UI
+  // read initial session from localStorage
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem('jayam_vpms_user');
     return savedUser ? JSON.parse(savedUser) : null;
@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem('jayam_vpms_token'));
   const [isLoading, setIsLoading] = useState(true);
 
-  // Validate stored JWT on initial mount and synchronize latest profile from server
+  // verify token on mount and refresh profile
   useEffect(() => {
     const initAuth = async () => {
       const storedToken = localStorage.getItem('jayam_vpms_token');
@@ -22,7 +22,6 @@ export const AuthProvider = ({ children }) => {
           setUser(res.data);
           localStorage.setItem('jayam_vpms_user', JSON.stringify(res.data));
         } catch (err) {
-          // Token expired or account disabled — clear stale session
           console.warn('Session restoration failed:', err.message);
           logout();
         }
@@ -33,9 +32,6 @@ export const AuthProvider = ({ children }) => {
     initAuth();
   }, []);
 
-  /**
-   * Authenticate user with email and password, persist token, and update context.
-   */
   const login = async (email, password) => {
     const response = await authService.login(email, password);
     const { token: receivedToken, user: loggedInUser } = response.data;
@@ -48,9 +44,6 @@ export const AuthProvider = ({ children }) => {
     return loggedInUser;
   };
 
-  /**
-   * Clear auth session and remove credentials from localStorage.
-   */
   const logout = () => {
     setToken(null);
     setUser(null);

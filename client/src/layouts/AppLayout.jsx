@@ -30,12 +30,7 @@ export const AppLayout = () => {
     navigate('/login');
   };
 
-  /**
-   * Dynamically build navigation sidebar items filtered by the active user's role:
-   * - ADMINISTRATOR: Full system visibility (analytics, staff, users, audit logs)
-   * - RECEPTIONIST: Front-desk operational tools (check-in/out queue, visitor registration)
-   * - EMPLOYEE: Host actions (pending request reviews and personal hosted guest history)
-   */
+  // Nav links per role
   let navItems = [];
   if (role === 'ADMINISTRATOR') {
     navItems = [

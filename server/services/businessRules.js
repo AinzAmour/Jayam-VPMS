@@ -1,9 +1,6 @@
 import VisitPass from '../models/VisitPass.js';
 
-/**
- * Standardize dates into YYYY-MM-DD format for consistent database queries
- * and comparison operations across client inputs and server UTC times.
- */
+// Format input dates to YYYY-MM-DD strings for direct string comparisons
 export const normalizeDateString = (dateInput) => {
   if (!dateInput) return null;
   if (typeof dateInput === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
@@ -16,9 +13,6 @@ export const normalizeDateString = (dateInput) => {
   return `${year}-${month}-${day}`;
 };
 
-/**
- * Returns today's local date string formatted as YYYY-MM-DD.
- */
 export const getTodayDateString = () => {
   const d = new Date();
   const year = d.getFullYear();
@@ -27,9 +21,6 @@ export const getTodayDateString = () => {
   return `${year}-${month}-${day}`;
 };
 
-/**
- * Returns current 24-hour time formatted as HH:mm for arrival time comparisons.
- */
 export const getCurrentTimeString = () => {
   const d = new Date();
   const hours = String(d.getHours()).padStart(2, '0');
@@ -37,15 +28,7 @@ export const getCurrentTimeString = () => {
   return `${hours}:${minutes}`;
 };
 
-/**
- * Pre-creation validation pipeline.
- * Evaluates core operational constraints before persisting a new visit pass:
- * 1. Visit date cannot be in the past.
- * 2. If registering for today, arrival time cannot be in the past.
- * 3. Visitor phone cannot have another ongoing active pass (pending/approved/inside).
- * 4. Visitor cannot be registered more than once on the same date.
- * 5. Host employee cannot exceed 3 pending approval requests at any given time.
- */
+// Validate rules before creating a pass (Rules 1 - 5)
 export const validateVisitRegistration = async ({
   visitorPhone,
   hostEmployeeId,
@@ -56,7 +39,7 @@ export const validateVisitRegistration = async ({
   const todayStr = getTodayDateString();
   const currentTimeStr = getCurrentTimeString();
 
-  // Rule 3: Ensure visitors are not scheduled on dates that have already passed
+  // Rule 3: no past dates
   if (normalizedVisitDate < todayStr) {
     const error = new Error('Visit date cannot be earlier than the current date (Rule 3).');
     error.statusCode = 400;
@@ -64,7 +47,7 @@ export const validateVisitRegistration = async ({
     throw error;
   }
 
-  // Rule 4: For same-day bookings, the arrival time must be ahead of current time
+  // Rule 4: for same-day visits, arrival time must be ahead of current time
   if (normalizedVisitDate === todayStr) {
     if (expectedArrivalTime < currentTimeStr) {
       const error = new Error(
@@ -76,8 +59,7 @@ export const validateVisitRegistration = async ({
     }
   }
 
-  // Rule 1: A visitor cannot have more than one active visit at the same time
-  // Active statuses: PENDING_APPROVAL, APPROVED, CHECKED_IN
+  // Rule 1: visitor can only have one active/pending pass at a time
   const activeVisit = await VisitPass.findOne({
     visitorPhone: visitorPhone.trim(),
     status: { $in: ['PENDING_APPROVAL', 'APPROVED', 'CHECKED_IN'] },
@@ -92,7 +74,7 @@ export const validateVisitRegistration = async ({
     throw error;
   }
 
-  // Rule 2: Duplicate visitor registrations for the same visitor on the same date should not be allowed
+  // Rule 2: prevent duplicate bookings for same visitor on same date (unless cancelled)
   const existingOnDate = await VisitPass.findOne({
     visitorPhone: visitorPhone.trim(),
     visitDate: normalizedVisitDate,
@@ -108,7 +90,7 @@ export const validateVisitRegistration = async ({
     throw error;
   }
 
-  // Rule 5: An employee cannot have more than 3 pending visitor requests awaiting approval
+  // Rule 5: max 3 pending approvals per host
   const pendingCount = await VisitPass.countDocuments({
     hostEmployeeId,
     status: 'PENDING_APPROVAL',
@@ -126,9 +108,7 @@ export const validateVisitRegistration = async ({
   return { normalizedVisitDate };
 };
 
-/**
- * Validate Check-In rules (Rules 6, 7, 9)
- */
+// Validate check-in rules (Rules 6, 7, 9)
 export const validateCheckIn = async (visitPass) => {
   if (!visitPass) {
     const error = new Error('Visit pass not found.');
@@ -136,7 +116,7 @@ export const validateCheckIn = async (visitPass) => {
     throw error;
   }
 
-  // Rule 9: Rejected visitor requests cannot be checked in
+  // Rule 9: rejected passes cannot be admitted
   if (visitPass.status === 'REJECTED') {
     const error = new Error('Cannot check in a rejected visitor request (Rule 9).');
     error.statusCode = 400;
@@ -144,7 +124,7 @@ export const validateCheckIn = async (visitPass) => {
     throw error;
   }
 
-  // Rule 6: Visitors can only be checked in after approval
+  // Rule 6: must be approved before receptionist check-in
   if (visitPass.status !== 'APPROVED') {
     const error = new Error(
       `Visitors can only be checked in after host approval. Current status is '${visitPass.status}' (Rule 6).`
@@ -154,7 +134,7 @@ export const validateCheckIn = async (visitPass) => {
     throw error;
   }
 
-  // Rule 7: A visitor who is already checked in cannot be checked in again until checked out
+  // Rule 7: make sure visitor isn't already inside under another pass
   const alreadyCheckedIn = await VisitPass.findOne({
     visitorPhone: visitPass.visitorPhone,
     status: 'CHECKED_IN',
@@ -173,9 +153,7 @@ export const validateCheckIn = async (visitPass) => {
   return true;
 };
 
-/**
- * Validate Check-Out rules (Rule 8)
- */
+// Validate check-out rules (Rule 8)
 export const validateCheckOut = (visitPass, checkOutTime = new Date()) => {
   if (!visitPass) {
     const error = new Error('Visit pass not found.');
@@ -191,7 +169,7 @@ export const validateCheckOut = (visitPass, checkOutTime = new Date()) => {
     throw error;
   }
 
-  // Rule 8: Check-out time must always be later than check-in time
+  // Rule 8: checkout time cannot precede checkin time
   const inTime = new Date(visitPass.checkInTime).getTime();
   const outTime = new Date(checkOutTime).getTime();
 
