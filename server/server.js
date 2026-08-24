@@ -43,6 +43,16 @@ const authLimiter = rateLimit({
 });
 app.use('/api/auth/login', authLimiter);
 
+// Root service check
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Jayam VPMS Backend API is active and operational.',
+    health: '/api/health',
+    version: '1.0.0',
+  });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.status(200).json({
