@@ -27,33 +27,54 @@
   background: #94a3b8;
 }
 
-/* Print styles — hide sidebar/nav, show report content full-width */
+/* Print styles — hide navigation and chrome, format multi-page report output */
 @media print {
-  /* hide sidebar, mobile nav, toasts, modals */
-  aside, nav, .no-print, [role="dialog"] {
+  /* Hide chrome, headers, navigation, buttons, and modals */
+  header, aside, nav, .no-print, [role="dialog"], button {
     display: none !important;
   }
 
-  /* let main content fill the page */
-  body, #root, main {
+  /* Override fixed screen heights and overflow constraints so all pages print */
+  html, body, #root, #root > div, .flex-1, main, .h-screen, .overflow-hidden, .overflow-y-auto {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    position: static !important;
     width: 100% !important;
+    max-width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
+    background: transparent !important;
   }
 
   .printable-area {
     width: 100% !important;
-    padding: 16px !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  /* keep background colors in PDF */
+  /* Preserve colors and background fills in printed PDF */
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  /* remove shadows and rounded corners for cleaner print */
+  /* Prevent cards, charts, and table rows from splitting across page breaks */
+  .printable-area > div,
+  .printable-area .grid > div,
+  .printable-area table tr {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
   .printable-area .shadow-sm {
     box-shadow: none !important;
+  }
+
+  @page {
+    margin: 12mm 10mm;
+    size: auto;
   }
 }
