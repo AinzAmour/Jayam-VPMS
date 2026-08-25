@@ -29,13 +29,27 @@
 
 /* Print styles — hide navigation and chrome, format multi-page report output */
 @media print {
+
   /* Hide chrome, headers, navigation, buttons, and modals */
-  header, aside, nav, .no-print, [role="dialog"], button {
+  header,
+  aside,
+  nav,
+  .no-print,
+  [role="dialog"],
+  button {
     display: none !important;
   }
 
   /* Override fixed screen heights and overflow constraints so all pages print */
-  html, body, #root, #root > div, .flex-1, main, .h-screen, .overflow-hidden, .overflow-y-auto {
+  html,
+  body,
+  #root,
+  #root>div,
+  .flex-1,
+  main,
+  .h-screen,
+  .overflow-hidden,
+  .overflow-y-auto {
     height: auto !important;
     min-height: 0 !important;
     max-height: none !important;
@@ -62,8 +76,8 @@
   }
 
   /* Prevent cards, charts, and table rows from splitting across page breaks */
-  .printable-area > div,
-  .printable-area .grid > div,
+  .printable-area>div,
+  .printable-area .grid>div,
   .printable-area table tr {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
@@ -76,5 +90,57 @@
   @page {
     margin: 12mm 10mm;
     size: auto;
+  }
+}
+
+/* Entrance animation with reduced-motion support */
+@keyframes loginEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-login-entrance {
+    animation: loginEntrance 240ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-login-entrance {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Button error shake animation */
+@keyframes buttonShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20%, 60% {
+    transform: translateX(-4px);
+  }
+  40%, 80% {
+    transform: translateX(4px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-btn-shake {
+    animation: buttonShake 220ms ease-in-out;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-btn-shake {
+    animation: none !important;
   }
 }

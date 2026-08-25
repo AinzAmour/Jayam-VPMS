@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import authService from '../services/authService';
+import BootScreen from '../components/BootScreen';
 
 const AuthContext = createContext(null);
 
@@ -63,7 +64,7 @@ export const AuthProvider = ({ children }) => {
         logout,
       }}
     >
-      {children}
+      {isLoading ? <BootScreen /> : children}
     </AuthContext.Provider>
   );
 };

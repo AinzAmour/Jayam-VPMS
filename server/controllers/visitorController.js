@@ -498,6 +498,17 @@ export const getPassActivities = async (req, res, next) => {
       });
     }
 
+    // Role check for Employee (mirroring getPassById scoping)
+    if (
+      req.user.role === 'EMPLOYEE' &&
+      String(pass.hostEmployeeId?._id || pass.hostEmployeeId) !== String(req.user.employeeRef)
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: 'You do not have access to view this visitor pass activity trail.',
+      });
+    }
+
     const activities = await ActivityLog.find({ visitPassId: pass._id })
       .sort({ timestamp: 1 })
       .populate('performedByUserId', 'fullName email role');

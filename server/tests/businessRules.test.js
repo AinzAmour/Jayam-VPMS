@@ -11,6 +11,8 @@ import {
   validateCheckOut,
   getTodayDateString,
 } from '../services/businessRules.js';
+import { getPassActivities } from '../controllers/visitorController.js';
+import { getJwtSecret } from '../middleware/auth.js';
 
 test('VPMS Backend Test Suite - Business Rules & Persistence', async (t) => {
   await t.test('Connect to DB and Seed Data', async () => {
@@ -195,6 +197,76 @@ test('VPMS Backend Test Suite - Business Rules & Persistence', async (t) => {
         errorCode: 'RULE_8_INVALID_CHECKOUT_TIME',
       }
     );
+  });
+
+  await t.test('Security Fix 1: IDOR scoping on visitor pass activity trail', async () => {
+    const david = await Employee.findOne({ email: 'david.chen@jayam.com' });
+    const ananya = await Employee.findOne({ email: 'ananya.sharma@jayam.com' });
+
+    const davidsPass = await VisitPass.findOne({ hostEmployeeId: david._id });
+    const ananyasPass = await VisitPass.findOne({ hostEmployeeId: ananya._id });
+
+    assert.ok(davidsPass, 'Should find a pass hosted by David');
+    assert.ok(ananyasPass, 'Should find a pass hosted by Ananya');
+
+    const createMockRes = () => ({
+      statusCode: 200,
+      data: null,
+      status(code) {
+        this.statusCode = code;
+        return this;
+      },
+      json(payload) {
+        this.data = payload;
+        return this;
+      },
+    });
+
+    // 1. Employee David requests activity trail for his OWN pass -> Allowed (200)
+    const reqDavidOwn = {
+      params: { id: davidsPass._id.toString() },
+      user: { role: 'EMPLOYEE', employeeRef: david._id },
+    };
+    const resDavidOwn = createMockRes();
+    await getPassActivities(reqDavidOwn, resDavidOwn, () => {});
+    assert.equal(resDavidOwn.statusCode, 200, 'Employee should access activities for own hosted pass');
+    assert.equal(resDavidOwn.data?.success, true);
+    assert.ok(Array.isArray(resDavidOwn.data?.data), 'Should return activity array');
+
+    // 2. Employee David requests activity trail for Ananya\'s pass -> Blocked (403)
+    const reqDavidOther = {
+      params: { id: ananyasPass._id.toString() },
+      user: { role: 'EMPLOYEE', employeeRef: david._id },
+    };
+    const resDavidOther = createMockRes();
+    await getPassActivities(reqDavidOther, resDavidOther, () => {});
+    assert.equal(resDavidOther.statusCode, 403, 'Employee must be blocked (403) from other host\'s pass activities');
+    assert.equal(resDavidOther.data?.success, false);
+
+    // 3. Receptionist / Admin requests activity trail for any pass -> Allowed (200)
+    const reqReceptionist = {
+      params: { id: ananyasPass._id.toString() },
+      user: { role: 'RECEPTIONIST' },
+    };
+    const resReceptionist = createMockRes();
+    await getPassActivities(reqReceptionist, resReceptionist, () => {});
+    assert.equal(resReceptionist.statusCode, 200, 'Receptionist should access activities across all passes');
+    assert.equal(resReceptionist.data?.success, true);
+  });
+
+  await t.test('Security Fix 2: JWT_SECRET environment requirement check', () => {
+    const originalSecret = process.env.JWT_SECRET;
+    try {
+      delete process.env.JWT_SECRET;
+      assert.throws(
+        () => {
+          getJwtSecret();
+        },
+        /JWT_SECRET environment variable is missing/
+      );
+    } finally {
+      process.env.JWT_SECRET = originalSecret;
+    }
   });
 
   await disconnectDB();

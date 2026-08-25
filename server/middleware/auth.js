@@ -1,7 +1,18 @@
+import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
-export const JWT_SECRET = process.env.JWT_SECRET || 'jayam_vpms_jwt_super_secret_key_2026';
+dotenv.config();
+
+export const getJwtSecret = () => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret || !secret.trim()) {
+    throw new Error(
+      '[FATAL SECURITY ERROR] JWT_SECRET environment variable is missing or empty. A secure secret must be configured.'
+    );
+  }
+  return secret.trim();
+};
 
 export const generateToken = (user) => {
   return jwt.sign(
@@ -12,7 +23,7 @@ export const generateToken = (user) => {
       fullName: user.fullName,
       employeeRef: user.employeeRef,
     },
-    JWT_SECRET,
+    getJwtSecret(),
     { expiresIn: '8h' }
   );
 };
@@ -33,7 +44,7 @@ export const verifyToken = async (req, res, next) => {
       });
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, getJwtSecret());
     const user = await User.findById(decoded.id).select('-password');
 
     if (!user) {

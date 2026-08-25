@@ -85,6 +85,12 @@ app.use(errorHandler);
 // Bootstrap Server & DB
 export const startServer = async () => {
   try {
+    if (!process.env.JWT_SECRET || !process.env.JWT_SECRET.trim()) {
+      throw new Error(
+        '[FATAL CONFIG ERROR] JWT_SECRET environment variable is missing or empty. A secure secret must be configured in your environment.'
+      );
+    }
+
     await connectDB();
 
     // Auto-seed if users collection is empty
