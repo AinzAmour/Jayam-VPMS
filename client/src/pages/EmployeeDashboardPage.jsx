@@ -8,6 +8,7 @@ import Modal from '../components/Modal';
 import TextArea from '../components/TextArea';
 import PassSlipModal from '../components/PassSlipModal';
 import AuditTimelineModal from '../components/AuditTimelineModal';
+import ErrorBanner from '../components/ErrorBanner';
 import Button from '../components/Button';
 import {
   CheckSquare,
@@ -27,6 +28,7 @@ import {
 export const EmployeeDashboardPage = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
 
   // Review Modal state (Approve / Reject)
@@ -48,11 +50,15 @@ export const EmployeeDashboardPage = () => {
 
   const loadDashboardData = async () => {
     setIsLoading(true);
+    setError(null);
     try {
       const res = await visitorService.getEmployeeDashboardStats();
       setDashboardData(res.data);
+      setError(null);
     } catch (err) {
-      toast.error(err.message || 'Failed to load employee dashboard.');
+      const errMsg = err.message || 'Failed to load employee dashboard.';
+      setError(errMsg);
+      toast.error(errMsg);
     } finally {
       setIsLoading(false);
     }
@@ -106,6 +112,15 @@ export const EmployeeDashboardPage = () => {
           </p>
         </div>
       </div>
+
+      {/* Error Banner with Retry */}
+      {error && (
+        <ErrorBanner
+          message="Unable to load employee dashboard"
+          detail={error}
+          onRetry={loadDashboardData}
+        />
+      )}
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

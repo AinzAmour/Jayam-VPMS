@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import activityService from '../services/activityService';
 import { useToast } from '../context/ToastContext';
 import DataTable from '../components/DataTable';
+import ErrorBanner from '../components/ErrorBanner';
 import Input from '../components/Input';
 import Select from '../components/Select';
 import { History, Search, Clock, User, ShieldCheck } from 'lucide-react';
@@ -19,6 +20,7 @@ export const AdminAuditLogsPage = () => {
   const [activities, setActivities] = useState([]);
   const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, totalRecords: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [actionFilter, setActionFilter] = useState('ALL');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -30,6 +32,7 @@ export const AdminAuditLogsPage = () => {
 
   const loadActivities = async (page = 1) => {
     setIsLoading(true);
+    setError(null);
     try {
       const res = await activityService.getAll({
         page,
@@ -39,8 +42,11 @@ export const AdminAuditLogsPage = () => {
       });
       setActivities(res.data?.records || []);
       setPagination(res.data?.pagination || { currentPage: 1, totalPages: 1, totalRecords: 0 });
+      setError(null);
     } catch (err) {
-      toast.error(err.message || 'Failed to load audit logs.');
+      const errMsg = err.message || 'Failed to load audit logs.';
+      setError(errMsg);
+      toast.error(errMsg);
     } finally {
       setIsLoading(false);
     }
@@ -115,6 +121,15 @@ export const AdminAuditLogsPage = () => {
           </p>
         </div>
       </div>
+
+      {/* Error Banner with Retry */}
+      {error && (
+        <ErrorBanner
+          message="Unable to load audit logs"
+          detail={error}
+          onRetry={() => loadActivities(pagination.currentPage || 1)}
+        />
+      )}
 
       {/* Filter Bar */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-3 items-center justify-between">

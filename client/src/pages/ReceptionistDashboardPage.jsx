@@ -7,6 +7,7 @@ import StatusBadge from '../components/StatusBadge';
 import PassSlipModal from '../components/PassSlipModal';
 import AuditTimelineModal from '../components/AuditTimelineModal';
 import ConfirmDialog from '../components/ConfirmDialog';
+import ErrorBanner from '../components/ErrorBanner';
 import Button from '../components/Button';
 import {
   Users,
@@ -26,6 +27,7 @@ import {
 export const ReceptionistDashboardPage = () => {
   const [queueData, setQueueData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [actionLoadingId, setActionLoadingId] = useState(null);
 
   // Modals
@@ -43,11 +45,15 @@ export const ReceptionistDashboardPage = () => {
 
   const loadTodayQueue = async () => {
     setIsLoading(true);
+    setError(null);
     try {
       const res = await visitorService.getTodayQueue();
       setQueueData(res.data);
+      setError(null);
     } catch (err) {
-      toast.error(err.message || 'Failed to load lobby queue.');
+      const errMsg = err.message || 'Failed to load lobby queue.';
+      setError(errMsg);
+      toast.error(errMsg);
     } finally {
       setIsLoading(false);
     }
@@ -112,6 +118,15 @@ export const ReceptionistDashboardPage = () => {
           Register New Visitor
         </Button>
       </div>
+
+      {/* Error Banner with Retry */}
+      {error && (
+        <ErrorBanner
+          message="Unable to load visitor desk queue"
+          detail={error}
+          onRetry={loadTodayQueue}
+        />
+      )}
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

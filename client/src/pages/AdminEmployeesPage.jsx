@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import employeeService from '../services/employeeService';
 import { useToast } from '../context/ToastContext';
 import DataTable from '../components/DataTable';
+import ErrorBanner from '../components/ErrorBanner';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Select from '../components/Select';
@@ -11,6 +12,7 @@ import { Users, UserPlus, Search, Edit3, ShieldAlert, CheckCircle2, XCircle } fr
 export const AdminEmployeesPage = () => {
   const [employees, setEmployees] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('ALL');
 
@@ -36,13 +38,17 @@ export const AdminEmployeesPage = () => {
 
   const loadEmployees = async () => {
     setIsLoading(true);
+    setError(null);
     try {
       const res = await employeeService.getAll({
         department: departmentFilter !== 'ALL' ? departmentFilter : undefined,
       });
       setEmployees(res.data || []);
+      setError(null);
     } catch (err) {
-      toast.error(err.message || 'Failed to load employees.');
+      const errMsg = err.message || 'Failed to load staff directory.';
+      setError(errMsg);
+      toast.error(errMsg);
     } finally {
       setIsLoading(false);
     }
@@ -197,6 +203,15 @@ export const AdminEmployeesPage = () => {
           Add Employee
         </Button>
       </div>
+
+      {/* Error Banner with Retry */}
+      {error && (
+        <ErrorBanner
+          message="Unable to load staff directory"
+          detail={error}
+          onRetry={loadEmployees}
+        />
+      )}
 
       {/* Filter & Search Bar */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-3 items-center justify-between">

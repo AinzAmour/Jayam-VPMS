@@ -6,6 +6,7 @@ import StatusBadge from '../components/StatusBadge';
 import PassSlipModal from '../components/PassSlipModal';
 import AuditTimelineModal from '../components/AuditTimelineModal';
 import ConfirmDialog from '../components/ConfirmDialog';
+import ErrorBanner from '../components/ErrorBanner';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Select from '../components/Select';
@@ -26,6 +27,7 @@ export const ReceptionistVisitorsPage = () => {
   const [passes, setPasses] = useState([]);
   const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, totalRecords: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [actionLoadingId, setActionLoadingId] = useState(null);
 
   // Filters
@@ -46,6 +48,7 @@ export const ReceptionistVisitorsPage = () => {
 
   const loadPasses = async (page = 1) => {
     setIsLoading(true);
+    setError(null);
     try {
       const params = {
         page,
@@ -57,8 +60,11 @@ export const ReceptionistVisitorsPage = () => {
       const res = await visitorService.getAll(params);
       setPasses(res.data?.records || []);
       setPagination(res.data?.pagination || { currentPage: 1, totalPages: 1, totalRecords: 0 });
+      setError(null);
     } catch (err) {
-      toast.error(err.message || 'Failed to load visitor records.');
+      const errMsg = err.message || 'Failed to load visitor records.';
+      setError(errMsg);
+      toast.error(errMsg);
     } finally {
       setIsLoading(false);
     }
@@ -236,6 +242,15 @@ export const ReceptionistVisitorsPage = () => {
           <p className="text-xs text-slate-500 mt-0.5">Search and filter visitor history and pass records</p>
         </div>
       </div>
+
+      {/* Error Banner with Retry */}
+      {error && (
+        <ErrorBanner
+          message="Unable to load visitor records"
+          detail={error}
+          onRetry={() => loadPasses(pagination.currentPage || 1)}
+        />
+      )}
 
       {/* Filter Bar */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">

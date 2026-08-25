@@ -3,6 +3,7 @@ import userService from '../services/userService';
 import employeeService from '../services/employeeService';
 import { useToast } from '../context/ToastContext';
 import DataTable from '../components/DataTable';
+import ErrorBanner from '../components/ErrorBanner';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Select from '../components/Select';
@@ -13,6 +14,7 @@ export const AdminUsersPage = () => {
   const [users, setUsers] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('ALL');
 
@@ -32,31 +34,33 @@ export const AdminUsersPage = () => {
   const toast = useToast();
 
   useEffect(() => {
-    loadUsers();
-    loadEmployees();
+    loadData();
   }, [roleFilter]);
 
-  const loadUsers = async () => {
+  const loadData = async () => {
     setIsLoading(true);
+    setError(null);
     try {
-      const res = await userService.getAll({
-        role: roleFilter !== 'ALL' ? roleFilter : undefined,
-      });
-      setUsers(res.data || []);
+      const [usersRes, employeesRes] = await Promise.all([
+        userService.getAll({
+          role: roleFilter !== 'ALL' ? roleFilter : undefined,
+        }),
+        employeeService.getAll({ activeOnly: 'true' }),
+      ]);
+      setUsers(usersRes.data || []);
+      setEmployees(employeesRes.data || []);
+      setError(null);
     } catch (err) {
-      toast.error(err.message || 'Failed to load user accounts.');
+      const errMsg = err.message || 'Failed to load user accounts.';
+      setError(errMsg);
+      toast.error(errMsg);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const loadEmployees = async () => {
-    try {
-      const res = await employeeService.getAll({ activeOnly: 'true' });
-      setEmployees(res.data || []);
-    } catch (err) {
-      console.error('Failed to load employees for dropdown:', err);
-    }
+  const loadUsers = async () => {
+    loadData();
   };
 
   const handleOpenCreateModal = () => {
@@ -204,6 +208,15 @@ export const AdminUsersPage = () => {
           Add User
         </Button>
       </div>
+
+      {/* Error Banner with Retry */}
+      {error && (
+        <ErrorBanner
+          message="Unable to load user accounts"
+          detail={error}
+          onRetry={loadData}
+        />
+      )}
 
       {/* Filter Bar */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-3 items-center justify-between">

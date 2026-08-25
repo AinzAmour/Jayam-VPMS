@@ -21,6 +21,9 @@ import {
 import Button from '../components/Button';
 import NotificationPopover from '../components/NotificationPopover';
 import StatefulButton from '../components/StatefulButton';
+import CommandPalette from '../components/CommandPalette';
+import { getNavItemsForRole } from '../config/navigation';
+import { Search } from 'lucide-react';
 
 const useReducedMotion = () => {
   const [prefersReduced, setPrefersReduced] = useState(false);
@@ -39,7 +42,10 @@ export const AppLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const prefersReduced = useReducedMotion();
+
+  const isMac = typeof window !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform);
 
   const handleLogout = async () => {
     // Brief beat so the user sees the "Signing out…" feedback
@@ -51,28 +57,8 @@ export const AppLayout = () => {
     navigate('/login', { replace: true });
   };
 
-  // Nav links per role
-  let navItems = [];
-  if (role === 'ADMINISTRATOR') {
-    navItems = [
-      { to: '/admin/dashboard', label: 'Overview', icon: LayoutDashboard },
-      { to: '/admin/employees', label: 'Staff Directory', icon: Users },
-      { to: '/admin/users', label: 'User Accounts', icon: UserCheck },
-      { to: '/admin/reports', label: 'Visitor Reports', icon: BarChart3 },
-      { to: '/admin/audit-logs', label: 'Audit Trail', icon: History },
-    ];
-  } else if (role === 'RECEPTIONIST') {
-    navItems = [
-      { to: '/receptionist/dashboard', label: 'Visitor Desk', icon: LayoutDashboard },
-      { to: '/receptionist/register', label: 'Register Visitor', icon: UserPlus },
-      { to: '/receptionist/visitors', label: 'Visitor Records', icon: ClipboardList },
-    ];
-  } else if (role === 'EMPLOYEE') {
-    navItems = [
-      { to: '/employee/dashboard', label: 'Pending Requests', icon: CheckSquare },
-      { to: '/employee/history', label: 'Visit History', icon: History },
-    ];
-  }
+  // Nav links per role from single source of truth
+  const navItems = getNavItemsForRole(role);
 
   const roleColors = {
     ADMINISTRATOR: 'bg-rose-100 text-rose-800 border-rose-200',
@@ -92,6 +78,12 @@ export const AppLayout = () => {
 
   return (
     <div className="h-screen flex bg-surface-bg overflow-hidden">
+      {/* Global Command Palette */}
+      <CommandPalette
+        isOpen={commandPaletteOpen}
+        setIsOpen={setCommandPaletteOpen}
+      />
+
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex lg:flex-col lg:w-64 h-screen sticky top-0 bg-slate-900 border-r border-slate-800 text-slate-300 select-none shrink-0">
         {/* Brand Header */}
@@ -294,7 +286,21 @@ export const AppLayout = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
+            {/* Command Palette Trigger Button */}
+            <button
+              onClick={() => setCommandPaletteOpen(true)}
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100/80 text-slate-500 hover:text-slate-700 transition-colors text-xs font-medium cursor-pointer"
+              aria-label="Open command palette"
+              title="Open Command Palette"
+            >
+              <Search className="w-3.5 h-3.5 text-slate-400" />
+              <span className="hidden md:inline text-slate-400">Search commands…</span>
+              <kbd className="px-1.5 py-0.5 text-[10px] font-bold bg-white border border-slate-200 rounded shadow-2xs text-slate-600">
+                {isMac ? '⌘K' : 'Ctrl K'}
+              </kbd>
+            </button>
+
             {role === 'RECEPTIONIST' && (
               <Button
                 variant="primary"

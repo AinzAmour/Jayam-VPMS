@@ -6,6 +6,7 @@ import StatusBadge from '../components/StatusBadge';
 import PassSlipModal from '../components/PassSlipModal';
 import PassStatusDonutChart from '../components/PassStatusDonutChart';
 import DepartmentBarChart from '../components/DepartmentBarChart';
+import ErrorBanner from '../components/ErrorBanner';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Select from '../components/Select';
@@ -28,6 +29,7 @@ export const AdminReportsPage = () => {
   const [endDate, setEndDate] = useState('');
   const [reportData, setReportData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedPass, setSelectedPass] = useState(null);
 
   const toast = useToast();
@@ -38,6 +40,7 @@ export const AdminReportsPage = () => {
 
   const loadReport = async () => {
     setIsLoading(true);
+    setError(null);
     try {
       const params = { filter: filterPreset };
       if (filterPreset === 'custom') {
@@ -46,8 +49,11 @@ export const AdminReportsPage = () => {
       }
       const res = await reportService.getSummary(params);
       setReportData(res.data);
+      setError(null);
     } catch (err) {
-      toast.error(err.message || 'Failed to generate report.');
+      const errMsg = err.message || 'Failed to generate report.';
+      setError(errMsg);
+      toast.error(errMsg);
     } finally {
       setIsLoading(false);
     }
@@ -165,6 +171,15 @@ export const AdminReportsPage = () => {
           )}
         </div>
       </div>
+
+      {/* Error Banner with Retry */}
+      {error && (
+        <ErrorBanner
+          message="Unable to load visitor reports"
+          detail={error}
+          onRetry={loadReport}
+        />
+      )}
 
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

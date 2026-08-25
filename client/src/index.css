@@ -229,3 +229,25 @@
     animation: none !important;
   }
 }
+
+/* Jayam VPMS Command Palette Custom Styling */
+.jayam-command-palette-wrapper .command-palette {
+  z-index: 9999 !important;
+}
+
+.jayam-command-palette-wrapper .command-palette-content {
+  border-radius: 14px !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 20px 35px -8px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(15, 23, 42, 0.05) !important;
+  overflow: hidden !important;
+}
+
+.jayam-command-palette-wrapper input {
+  font-size: 0.875rem !important;
+  padding: 14px 16px !important;
+  color: #0f172a !important;
+}
+
+.jayam-command-palette-wrapper input::placeholder {
+  color: #94a3b8 !important;
+}

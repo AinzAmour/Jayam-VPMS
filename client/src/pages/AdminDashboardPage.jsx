@@ -8,6 +8,7 @@ import StatusBadge from '../components/StatusBadge';
 import PassSlipModal from '../components/PassSlipModal';
 import AuditTimelineModal from '../components/AuditTimelineModal';
 import VisitorDetailsDrawer from '../components/VisitorDetailsDrawer';
+import ErrorBanner from '../components/ErrorBanner';
 import Button from '../components/Button';
 import {
   Users,
@@ -175,23 +176,11 @@ export const AdminDashboardPage = () => {
 
       {/* Error Banner with Retry */}
       {error && (
-        <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-          <div className="flex items-start gap-2.5">
-            <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
-            <div>
-              <p className="font-bold text-sm">Unable to load dashboard data</p>
-              <p className="text-rose-700 mt-0.5">{error}</p>
-            </div>
-          </div>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => loadDashboardData(false)}
-            className="shrink-0 border-rose-300 hover:bg-rose-100/60 text-rose-900"
-          >
-            Try Again
-          </Button>
-        </div>
+        <ErrorBanner
+          message="Unable to load dashboard data"
+          detail={error}
+          onRetry={() => loadDashboardData(false)}
+        />
       )}
 
       {/* KPI Cards Grid */}

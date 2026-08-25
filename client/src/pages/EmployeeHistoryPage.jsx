@@ -5,6 +5,7 @@ import DataTable from '../components/DataTable';
 import StatusBadge from '../components/StatusBadge';
 import PassSlipModal from '../components/PassSlipModal';
 import AuditTimelineModal from '../components/AuditTimelineModal';
+import ErrorBanner from '../components/ErrorBanner';
 import Input from '../components/Input';
 import Select from '../components/Select';
 import Button from '../components/Button';
@@ -14,6 +15,7 @@ export const EmployeeHistoryPage = () => {
   const [passes, setPasses] = useState([]);
   const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, totalRecords: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Filters
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,6 +34,7 @@ export const EmployeeHistoryPage = () => {
 
   const loadMyHistory = async (page = 1) => {
     setIsLoading(true);
+    setError(null);
     try {
       const params = {
         page,
@@ -43,8 +46,11 @@ export const EmployeeHistoryPage = () => {
       const res = await visitorService.getAll(params);
       setPasses(res.data?.records || []);
       setPagination(res.data?.pagination || { currentPage: 1, totalPages: 1, totalRecords: 0 });
+      setError(null);
     } catch (err) {
-      toast.error(err.message || 'Failed to load visit history.');
+      const errMsg = err.message || 'Failed to load visit history.';
+      setError(errMsg);
+      toast.error(errMsg);
     } finally {
       setIsLoading(false);
     }
@@ -140,6 +146,15 @@ export const EmployeeHistoryPage = () => {
           <p className="text-xs text-slate-500 mt-0.5">Log of all visitor requests and visits hosted by you</p>
         </div>
       </div>
+
+      {/* Error Banner with Retry */}
+      {error && (
+        <ErrorBanner
+          message="Unable to load visit history"
+          detail={error}
+          onRetry={() => loadMyHistory(pagination.currentPage || 1)}
+        />
+      )}
 
       {/* Filter Bar */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
