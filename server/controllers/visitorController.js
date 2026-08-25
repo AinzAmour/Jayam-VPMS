@@ -537,13 +537,19 @@ export const getEmployeeDashboardStats = async (req, res, next) => {
     const pendingRequests = await VisitPass.find({
       hostEmployeeId: hostId,
       status: 'PENDING_APPROVAL',
-    }).sort({ createdAt: -1 });
+    })
+      .sort({ createdAt: -1 })
+      .populate('hostEmployeeId', 'fullName department designation email phone employeeCode')
+      .populate('createdByUserId', 'fullName email role');
 
     const todayApprovedVisits = await VisitPass.find({
       hostEmployeeId: hostId,
       visitDate: todayStr,
       status: { $in: ['APPROVED', 'CHECKED_IN', 'CHECKED_OUT'] },
-    }).sort({ expectedArrivalTime: 1 });
+    })
+      .sort({ expectedArrivalTime: 1 })
+      .populate('hostEmployeeId', 'fullName department designation email phone employeeCode')
+      .populate('createdByUserId', 'fullName email role');
 
     const totalHostedCount = await VisitPass.countDocuments({
       hostEmployeeId: hostId,

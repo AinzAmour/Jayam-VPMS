@@ -3,19 +3,20 @@ import Modal from './Modal';
 import Button from './Button';
 import StatusBadge from './StatusBadge';
 import { Printer, ShieldCheck, Building, User, Calendar, Clock, Phone, FileText } from 'lucide-react';
+import { printPassSlip } from '../utils/printPassSlip';
 
 export const PassSlipModal = ({ isOpen, onClose, pass }) => {
   if (!pass) return null;
 
   const handlePrint = () => {
-    window.print();
+    printPassSlip(pass);
   };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="max-w-xl" title="Visitor Pass Slip">
-      <div className="printable-area">
+      <div className="printable-area pass-slip-wrapper">
         {/* Pass Card Container */}
-        <div className="border border-slate-300 rounded-xl overflow-hidden shadow-sm bg-white">
+        <div className="pass-slip-printable-card border border-slate-300 rounded-xl overflow-hidden shadow-sm bg-white">
           {/* Header */}
           <div className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">

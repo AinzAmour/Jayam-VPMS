@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import visitorService from '../services/visitorService';
 import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/AuthContext';
 import MetricCard from '../components/MetricCard';
 import StatusBadge from '../components/StatusBadge';
 import Modal from '../components/Modal';
@@ -39,6 +40,7 @@ export const EmployeeDashboardPage = () => {
   const [auditPass, setAuditPass] = useState(null);
 
   const toast = useToast();
+  const { user } = useAuth();
 
   useEffect(() => {
     loadDashboardData();
@@ -96,9 +98,11 @@ export const EmployeeDashboardPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900">Pending Visitor Requests</h2>
+          <h2 className="text-2xl font-bold text-slate-900">
+            Pending Requests {user?.fullName ? `— ${user.fullName}` : ''}
+          </h2>
           <p className="text-xs text-slate-500 mt-1">
-            Review incoming visit requests and track today's scheduled guests
+            Review incoming visit requests assigned to you and track today's scheduled guests
           </p>
         </div>
       </div>

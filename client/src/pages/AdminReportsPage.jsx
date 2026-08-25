@@ -4,6 +4,8 @@ import { useToast } from '../context/ToastContext';
 import MetricCard from '../components/MetricCard';
 import StatusBadge from '../components/StatusBadge';
 import PassSlipModal from '../components/PassSlipModal';
+import PassStatusDonutChart from '../components/PassStatusDonutChart';
+import DepartmentBarChart from '../components/DepartmentBarChart';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Select from '../components/Select';
@@ -203,132 +205,41 @@ export const AdminReportsPage = () => {
       {/* Status Breakdown & Department Distribution */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Status Distribution */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-          <h3 className="text-base font-bold text-slate-900 mb-1">Pass Status Distribution</h3>
-          <p className="text-xs text-slate-500 mb-6">Proportion of passes across each approval & check-in state</p>
-
-          <div className="space-y-4">
-            {reportData?.statusBreakdown && (
-              <>
-                <div>
-                  <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
-                    <span>Approved & Completed</span>
-                    <span>
-                      {(reportData.statusBreakdown.APPROVED || 0) +
-                        (reportData.statusBreakdown.CHECKED_IN || 0) +
-                        (reportData.statusBreakdown.CHECKED_OUT || 0)}
-                    </span>
-                  </div>
-                  <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-emerald-500 rounded-full"
-                      style={{
-                        width: `${
-                          reportData.totalVisitors > 0
-                            ? (((reportData.statusBreakdown.APPROVED || 0) +
-                                (reportData.statusBreakdown.CHECKED_IN || 0) +
-                                (reportData.statusBreakdown.CHECKED_OUT || 0)) /
-                                reportData.totalVisitors) *
-                              100
-                            : 0
-                        }%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
-                    <span>Pending Host Review</span>
-                    <span>{reportData.statusBreakdown.PENDING_APPROVAL || 0}</span>
-                  </div>
-                  <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-amber-500 rounded-full"
-                      style={{
-                        width: `${
-                          reportData.totalVisitors > 0
-                            ? ((reportData.statusBreakdown.PENDING_APPROVAL || 0) / reportData.totalVisitors) * 100
-                            : 0
-                        }%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
-                    <span>Rejected by Host</span>
-                    <span>{reportData.statusBreakdown.REJECTED || 0}</span>
-                  </div>
-                  <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-rose-500 rounded-full"
-                      style={{
-                        width: `${
-                          reportData.totalVisitors > 0
-                            ? ((reportData.statusBreakdown.REJECTED || 0) / reportData.totalVisitors) * 100
-                            : 0
-                        }%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
-                    <span>Cancelled</span>
-                    <span>{reportData.statusBreakdown.CANCELLED || 0}</span>
-                  </div>
-                  <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-slate-400 rounded-full"
-                      style={{
-                        width: `${
-                          reportData.totalVisitors > 0
-                            ? ((reportData.statusBreakdown.CANCELLED || 0) / reportData.totalVisitors) * 100
-                            : 0
-                        }%`,
-                      }}
-                    />
-                  </div>
-                </div>
-              </>
-            )}
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="text-base font-bold text-slate-900">Pass Status Distribution</h3>
+              <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
+                {reportData?.totalVisitors ?? 0} Total
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 mb-6">Proportion of passes across each approval & check-in state</p>
           </div>
+
+          <PassStatusDonutChart
+            statusBreakdown={reportData?.statusBreakdown}
+            totalVisitors={reportData?.totalVisitors ?? 0}
+            isLoading={isLoading}
+          />
         </div>
 
         {/* Top Host Departments */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-          <h3 className="text-base font-bold text-slate-900 mb-1">Department Visitor Traffic</h3>
-          <p className="text-xs text-slate-500 mb-6">Breakdown of host employee departments receiving visitors</p>
-
-          <div className="space-y-4">
-            {!reportData?.topDepartments?.length ? (
-              <p className="text-xs text-slate-500 text-center py-8">No department visit records found.</p>
-            ) : (
-              reportData.topDepartments.map((dept, idx) => (
-                <div key={dept.department}>
-                  <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
-                    <span>{dept.department}</span>
-                    <span className="font-bold text-indigo-700">{dept.count} visits</span>
-                  </div>
-                  <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-indigo-600 rounded-full"
-                      style={{
-                        width: `${
-                          reportData.totalVisitors > 0
-                            ? (dept.count / reportData.totalVisitors) * 100
-                            : 0
-                        }%`,
-                      }}
-                    />
-                  </div>
-                </div>
-              ))
-            )}
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="text-base font-bold text-slate-900">Department Visitor Traffic</h3>
+              <span className="text-[11px] font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-full">
+                {reportData?.topDepartments?.length ?? 0} Departments
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 mb-4">Breakdown of host employee departments receiving visitors</p>
           </div>
+
+          <DepartmentBarChart
+            departments={reportData?.topDepartments || []}
+            totalVisitors={reportData?.totalVisitors ?? 0}
+            isLoading={isLoading}
+          />
         </div>
       </div>
 
