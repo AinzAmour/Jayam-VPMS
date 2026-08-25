@@ -1,5 +1,13 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import dns from 'node:dns';
+
+// Configure reliable DNS servers to prevent Windows/ISP querySrv ECONNREFUSED with MongoDB Atlas
+try {
+  dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+} catch {
+  // fallback if DNS override not permitted
+}
 
 dotenv.config();
 
