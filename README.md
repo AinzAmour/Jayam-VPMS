@@ -6,6 +6,10 @@ Jayam VPMS is a full-stack Visitor Pass Management System designed to manage cor
 - **Web Application (Frontend)**: [https://jayam-vpms-frontend.vercel.app](https://jayam-vpms-frontend.vercel.app)
 - **API Server (Backend)**: [https://jayam-vpms-backend.onrender.com](https://jayam-vpms-backend.onrender.com)
 
+> ⏳ **Note on Initial Backend Latency (Render Free Tier)**:  
+> The backend is hosted on Render's free tier. As noted by Render: *"Your free instance will spin down with inactivity, which can delay requests by 50 seconds or more."*  
+> If the live application takes a short while to log in or respond on initial visit, please allow ~50 seconds for the backend instance to spin back up.
+
 ---
 
 ## Features
