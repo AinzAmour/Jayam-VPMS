@@ -148,6 +148,39 @@ All accounts use the default password: **`Password123!`** (also available via 1-
 
 ---
 
+## Database Seeding
+
+The application comes with an enterprise seed script in `server/utils/seed.js` that populates 12 staff members, 15 user accounts, 20 multi-state visitor passes, and 56 audit logs.
+
+To seed your database:
+```bash
+cd server
+npm run seed
+```
+*(If `MONGODB_URI` is configured in `.env`, it will seed your MongoDB Atlas cluster directly; otherwise, it seeds the zero-config in-memory database).*
+
+---
+
+## API Endpoints Reference
+
+| Module | Method | Endpoint | Description | Auth Required |
+|---|---|---|---|---|
+| **Auth** | `POST` | `/api/auth/login` | User authentication & JWT token generation | No |
+| **Auth** | `GET` | `/api/auth/me` | Retrieve authenticated user profile | Yes |
+| **Visitors** | `GET` | `/api/visitors` | List visitor passes with search, status, and date filters | Yes |
+| **Visitors** | `POST` | `/api/visitors` | Register new visitor pass (validates business rules 1-5) | Yes (Receptionist/Admin) |
+| **Visitors** | `GET` | `/api/visitors/:id` | Get visitor pass details & activity history | Yes |
+| **Visitors** | `PATCH` | `/api/visitors/:id/status` | Approve, reject, check-in, or check-out visitor pass | Yes |
+| **Employees** | `GET` | `/api/employees` | List active employee directory for host selection | Yes |
+| **Employees** | `POST` | `/api/employees` | Create employee record | Yes (Admin) |
+| **Employees** | `PUT` | `/api/employees/:id` | Update employee profile | Yes (Admin) |
+| **Users** | `GET` | `/api/users` | List user accounts | Yes (Admin) |
+| **Users** | `POST` | `/api/users` | Provision new system user | Yes (Admin) |
+| **Reports** | `GET` | `/api/reports/analytics` | Aggregate visitor counts, status distribution & department metrics | Yes (Admin) |
+| **Activity** | `GET` | `/api/activity` | Retrieve paginated audit logs with state transitions | Yes (Admin) |
+
+---
+
 ## Business Rules
 
 The backend enforces the following business logic rules:
